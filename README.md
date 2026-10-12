@@ -1,85 +1,84 @@
-# Simulazione del comportamento di stormi
-**Autore:** Dario Eugenio Campisi  
-**Data:** Gennaio 2024  
+# Simulation of Flocking Behavior
+**Author:** Dario Eugenio Campisi  
+**Date:** January 2024  
 
-- [Descrizione generale](#descrizione-generale)
-- [Logica di implementazione](#logica-di-implementazione)
-- [Strategie di testing](#strategie-di-testing)
-- [Istruzioni per la compilazione](#istruzioni-per-la-compilazione)
-- [Interpretazione dei risultati](#interpretazione-dei-risultati)
+- [General description](#general-description)
+- [Implementation logic](#implementation-logic)
+- [Testing strategies](#testing-strategies)
+- [Compilation instructions](#compilation-instructions)
+- [Interpretation of the results](#interpretation-of-the-results)
 
-## Descrizione generale
-Il progetto è un tentativo di implementazione del programma **Boids**, sviluppato da Craig Reynolds nel 1986, facente uso della libreria grafica **SFML**. L'obiettivo del programma è quello di simulare il comportamento di un generico **stormo**, ovvero un sistema complesso costituito da singole entità, i *boid*, che rispettano delle precise regole di movimento, qui chiamate **regole di volo**.
+## General description
+This project is an attempt at implementing **Boids**, a program developed by Craig Reynolds in 1986, using the **SFML** graphics library. The aim of the program is to simulate the behavior of a generic **flock**, that is, a complex system made up of individual entities, the *boids*, which follow specific rules of movement, referred to here as **flight rules**.
 
 <div align="center">
 <img src="utility/boid_shape1.png" width="400">
 
-<b>Figura 1:</b> Forma geometrica usata per la rappresentazione grafica dei boid
+<b>Figure 1:</b> Geometric shape used for the graphical representation of the boids
 </div>
 
-### Regole di volo
-Il movimento nel piano di ogni boid è il risultato delle seguenti **regole**. In modo da favorire la formazione di più stormi indipendenti, esse vengono applicate unicamente ai boid considerati **vicini**, quelli cioè la cui distanza non supera un certo valore.
+### Flight rules
+The movement of each boid in the plane results from the following **rules**. To encourage the formation of multiple independent flocks, these rules are applied only to boids considered **neighbors**, that is, boids whose distance does not exceed a certain value.
 
-- **Separazione:** induce i boid a mantenere tra loro una distanza minima, impedendogli così di sovrapporsi
-- **Allineamento:** fa sì che i boid seguano la stessa direzione dei vicini
-- **Coesione:** spinge i boid a muoversi verso il centro di massa dello stormo
+- **Separation:** causes boids to maintain a minimum distance from one another, thus preventing them from overlapping
+- **Alignment:** causes boids to move in the same direction as their neighbors
+- **Cohesion:** pushes boids to move toward the center of mass of the flock
 
-Da queste tre semplici regole emergono dei **comportamenti macroscopici caotici**, del tutto simili a quelli degli stormi reali. Per quanto concerne il **comportamento ai bordi** della finestra grafica, quando un boid comincia ad avvicinarsi ad uno dei quattro bordi della finestra, questo vira in modo da evitarlo. Per ottenere questo effetto è stato definito un **margine** nei pressi dei bordi, se superato la velocità del boid viene gradualmente invertita secondo un opportuno **fattore di virata**.
+These three simple rules give rise to **chaotic macroscopic behaviors**, very similar to those of real flocks. As for the **boundary behavior** of the graphical window, when a boid starts approaching one of the four edges of the window, it turns to avoid it. To achieve this effect, a **margin** has been defined near the edges; when a boid crosses it, its velocity is gradually reversed according to an appropriate **turn factor**.
 
-### Dinamica di una simulazione
-All'avvio del programma viene mostrata una **schermata iniziale** che invita l'utente a scegliere il numero di boid che saranno generati, questo è limitato ad un massimo di 300 per non appesantire troppo la finestra grafica ed evitare comportamenti indesiderati:
+### Simulation dynamics
+When the program starts, an **initial screen** appears, prompting the user to choose the number of boids to be generated. This number is limited to a maximum of 300 to avoid overloading the graphical window and producing undesirable behaviors:
 
 <div align="center">
 <img src="utility/initial_screen.png" width="800">
 
-<b>Figura 2:</b> Schermata iniziale
+<b>Figure 2:</b> Initial screen
 </div>
 
-Per dare inizio alla simulazione l'utente può utilizzare il pulsante *start* o alternativamente premere *Enter*.
+To start the simulation, the user can click the *start* button or, alternatively, press *Enter*.
 
-Durante la simulazione è possibile regolare il valore dei parametri delle regole di volo e del raggio di visione dei boid tramite degli **slider**, osservando in tempo reale come tali modifiche si riflettono sui movimenti macroscopici degli stormi. Per tornare rapidamente ai valori impostati di default, è sufficiente premere il pulsante *reset*:
+During the simulation, the parameters of the flight rules and the boids' vision radius can be adjusted using **sliders**, making it possible to observe in real time how these changes affect the macroscopic movements of the flocks. To quickly restore the default values, simply press the *reset* button:
 
 <div align="center">
 <img src="utility/one_flock.png" width="800">
 
-<b>Figura 3:</b> Frame di una simulazione con un solo stormo arancione costituito da 173 boid
+<b>Figure 3:</b> Frame of a simulation with a single orange flock consisting of 173 boids
 </div>
 
+As can be seen in **Figure 3**, a **predator** is constantly present in the simulations, distinguished from the boids by its color and size. Its role is to chase the flocks (the **cohesion** rule is therefore applied to it) while exerting a **repulsive** force on nearby boids. In terms of implementation, this force is analogous to **separation**, but stronger.
 
-Come è possibile notare dalla **Figura 3**, alle simulazioni è stata aggiunta la presenza costante di un **predatore**, differenziato dai boid per colore e dimensioni. Il suo ruolo è quello di inseguire gli stormi (su di esso è dunque applicata la regola della **coesione**), operando sui boid vicini una spinta di **repulsione**, analoga, in termini di implementazione, alla **separazione** ma di maggiore intensità.
-
-### Componente stocastica
-In ogni simulazione è equiprobabile la generazione di uno, due o tre **stormi diversi**, differenziati per colore. I possibili colori degli stormi e dei dettagli grafici della *top bar* sono <span style="color:rgb(0, 102, 204)">blu</span>, <span style="color:rgb(0, 153, 0)">verde</span> e <span style="color:rgb(255, 128, 0)">arancione</span>.
+### Stochastic component
+In each simulation, the generation of one, two, or three **different flocks**, distinguished by color, is equally likely. The possible colors of the flocks and the graphical details of the *top bar* are <span style="color:rgb(0, 102, 204)">blue</span>, <span style="color:rgb(0, 153, 0)">green</span>, and <span style="color:rgb(255, 128, 0)">orange</span>.
 
 <div align="center">
 <img src="utility/three_flocks.png" width="800">
 
-<b>Figura 4:</b> Frame di una simulazione con 230 boid divisi in tre stormi diversi
+<b>Figure 4:</b> Frame of a simulation with 230 boids divided into three different flocks
 </div>
 
-### Output delle statistiche
-Periodicamente, il programma stampa a schermo la **distanza media** dei boid (tenendo conto, se presenti, dei diversi stormi) e la **velocità media** di tutti i boid della simulazione, con relative **deviazioni standard**. Esempio:
+### Statistics output
+Periodically, the program prints the **mean distance** between boids (taking the different flocks into account, if present) and the **mean speed** of all the boids in the simulation, together with their respective **standard deviations**. Example:
 
 ```shell
 Mean distance: (252.012 +/- 116.827) px 
 Mean speed: (2.00593 +/- 0.184291) px/frameTime
 ```
 
-L'implementazione di ciò si trova all'intero della funzione ```st::printStatistics()```, contenuta nel file ```statistics.hpp``` insieme ad alcune funzioni ausiliarie per il calcolo della media e della deviazione standard.
+This functionality is implemented in the `st::printStatistics()` function, contained in the `statistics.hpp` file along with some auxiliary functions for calculating the mean and standard deviation.
 
-**Nota:** La *frequenza* della stampa a schermo dei parametri dipende dalle prestazioni mantenute dalla simulazione, alcuni dati di riferimento:
-- Prestazioni standard (~115 fps fissi): ~25 secondi
-- Prestazioni medio-basse (~70 fps fissi): ~40 secondi
+**Note:** The *frequency* at which the statistics are printed depends on the performance maintained by the simulation. Some reference values:
+- Standard performance (~115 constant fps): ~25 seconds
+- Medium-low performance (~70 constant fps): ~40 seconds
 
-## Logica di implementazione
-Lo scheletro del programma è costituito da tre classi: ```bd::Boid```, ```sd::Slider``` e ```bt::Button```, tutte fortemente basate sulle classi fornite dalla libreria **SFML/Graphics** e contenute in ```boid.hpp```, ```slider.hpp``` e ```button.hpp``` rispettivamente.
+## Implementation logic
+The program is built around three classes: `bd::Boid`, `sd::Slider`, and `bt::Button`, all strongly based on classes provided by **SFML/Graphics** and contained in `boid.hpp`, `slider.hpp`, and `button.hpp`, respectively.
 
 ### bd::Boid
-È la classe fondamentale del programma, permette la rappresentazione e il movimento dei boid nella finestra. Internamente è costituita da una ```sf::ConvexShape```, definita in modo da ottenere la forma mostrata in [Figura 1](#descrizione-generale), e da un ```sf::Vector2f``` rappresentante la velocità del boid.
+This is the fundamental class of the program: it allows boids to be represented and moved within the window. Internally, it consists of an `sf::ConvexShape`, defined to obtain the shape shown in [Figure 1](#general-description), and an `sf::Vector2f` representing the boid's velocity.
 
-**Costruttore**
+**Constructors**
 ```cpp
-// usato per i boid
+// used for boids
 bd::Boid::Boid(const sf::Color &color, const sf::Vector2f &position,
            const sf::Vector2f &velocity)
     : velocity_{velocity} {
@@ -97,7 +96,7 @@ bd::Boid::Boid(const sf::Color &color, const sf::Vector2f &position,
 ```
 
 ```cpp
-// usato per il predatore
+// used for the predator
 bd::Boid::Boid(const sf::Vector2f &position, const sf::Vector2f &velocity)
     : velocity_{velocity} {
   shape_.setPointCount(4);
@@ -113,28 +112,28 @@ bd::Boid::Boid(const sf::Vector2f &position, const sf::Vector2f &velocity)
 }
 ```
 
-**Metodi principali**
+**Main methods**
 
-- ```bool isCloseAndVisible()```
+- `bool isCloseAndVisible()`
 
-    Verifica che un boid si trovi all'interno del campo visivo del boid su cui è applicato;
+    Checks whether a boid is within the field of vision of the boid on which the method is called;
 
-- ```void maxVelocity()```
+- `void maxVelocity()`
 
-    Esegue un controllo sulla velocità del boid, se questa supera il valore impostato per la **velocità massima**, viene riportata al valore limite;
+    Checks the boid's speed and, if it exceeds the specified **maximum speed**, brings it back to the limit;
 
-- ```void avoidBoundary()```
+- `void avoidBoundary()`
 
-    Impone il [comportamento ai bordi](#comportamento-ai-bordi) di cui sopra;
+    Enforces the [boundary behavior](#flight-rules) described above;
 
-- ```bool isFlockMate()```
+- `bool isFlockMate()`
 
-    Verifica che un boid sia un compagno di stormo del boid su cui è applicato, la verifica consiste banalmente nel controllo dei colori dei due;
+    Checks whether a boid belongs to the same flock as the boid on which the method is called; this simply consists of comparing the two boids' colors;
 
 ### sd::Slider
-È la classe utilizzata per la creazione e il funzionamento degli slider a cui si è accennato in [dinamica di una simulazione](#dinamica-di-una-simulazione). Internamente è costituita da: una ```sf::RectangleShape``` che rappresenta la barra di scorrimento dello slider, una ```sf::CircleShape``` rappresentante invece il cursore dello slider, un ```sf::Text``` per mostrarne il titolo, una ```float&``` per legare lo slider ad un certo parametro e un ```const float``` per il valore di default del parametro.
+This class is used to create and operate the sliders mentioned in [simulation dynamics](#simulation-dynamics). Internally, it consists of: an `sf::RectangleShape` representing the slider track, an `sf::CircleShape` representing the slider handle, an `sf::Text` displaying its title, a `float&` linking the slider to a given parameter, and a `const float` storing the parameter's default value.
 
-**Costruttore**
+**Constructor**
 
 ```cpp
 sd::Slider::Slider(const std::string &title, const sf::Font &font,
@@ -158,30 +157,30 @@ sd::Slider::Slider(const std::string &title, const sf::Font &font,
 }
 ```
 
-**Metodi principali**
+**Main methods**
 
-- ```bool mouseIsOver()```
+- `bool mouseIsOver()`
 
-    Verifica che il mouse sia sopra allo slider, condizione necessaria affinchè il cursore possa essere mosso;
+    Checks whether the mouse is over the slider, a necessary condition for moving its handle;
 
-- ```void stayInRange()```
+- `void stayInRange()`
 
-    Impedisce al cursore di muoversi oltre gli estremi della barra di scorrimento;
+    Prevents the handle from moving beyond the ends of the slider track;
 
-- ```void work()```
+- `void work()`
 
-    Racchiude tutto il funzionamento dello slider, compresa la regolazione del parametro a cui lo slider è legato;
+    Handles all slider functionality, including adjustment of the parameter linked to it;
 
-- ```void reset()```
+- `void reset()`
 
-    Riporta il cursore al centro della barra ed il parametro al suo valore di default, viene eseguito in seguito alla pressione del pulsante *reset* mostrato in e.g. [Figura 4](#componente-stocastica);
+    Returns the handle to the center of the track and the parameter to its default value. This is called when the *reset* button shown, for example, in [Figure 4](#stochastic-component) is pressed;
 
-**Nota:** Il numero degli slider è stato limitato a quattro per esigenze di natura estetica, i parametri potenzialmente modificabili presenti nel programma sono molteplici e la classe ```sd::Slider``` è sufficientemente versatile. La particolare scelta fatta è assolutamente arbitraria.
+**Note:** The number of sliders was limited to four for aesthetic reasons. There are several other parameters in the program that could potentially be modified, and the `sd::Slider` class is sufficiently versatile. The particular choice made here is entirely arbitrary.
 
 ### bt::Button
-È una classe piuttosto semplice utilizzata per l'implementazione dei pulsanti *start* e *reset* visti in [dinamica di una simulazione](#dinamica-di-una-simulazione), il cui funzionamento richiede però un forte utilizzo di ```sf::Event```, classe di SFML che gestisce gli eventi della finestra grafica. Internamente è costituita da una ```sf::RectangleShape``` che dà la forma al pulsante e da un ```sf::Text``` che ne rappresenta l'etichetta.
+This is a fairly simple class used to implement the *start* and *reset* buttons described in [simulation dynamics](#simulation-dynamics). Their functionality, however, relies heavily on `sf::Event`, the SFML class that handles events in the graphical window. Internally, the class consists of an `sf::RectangleShape` giving the button its shape and an `sf::Text` representing its label.
 
-**Costruttore**
+**Constructor**
 ```cpp
 bt::Button::Button(const std::string &title, const sf::Font &font,
                const sf::Vector2f &rect_size, unsigned int text_size,
@@ -200,51 +199,52 @@ bt::Button::Button(const std::string &title, const sf::Font &font,
 }
 ```
 
-**Metodi principali**
+**Main methods**
 
-- ```bool mouseIsOver()```
+- `bool mouseIsOver()`
     
-    Metodo analogo a ```sd::Slider::mouseIsOver()```;
+    A method analogous to `sd::Slider::mouseIsOver()`;
 
-### Rapida overview di main.cpp
-```main.cpp``` è il file principale del programma, si cerca qui di riassumerne la struttura generale. Nell'ordine:
+### Quick overview of main.cpp
+`main.cpp` is the program's main file. Its overall structure is summarized below, in order:
 
-- Dichiarazione delle **variabili "globali"** del programma, incluse le dimensioni della finestra, i parametri delle regole di volo e gli slider ad essi collegati;
-- Gestione della generazione dei **numeri casuali**, utilizzati per le posizioni e le velocità iniziali dei boid;
-- Definizione di tutti gli elementi che compongono la **[schermata iniziale](#dinamica-di-una-simulazione)**;
-- Gestione dei **[colori casuali](#componente-stocastica)** dei boid e costruzione del **predatore**;
-- Gestione della **finestra** e dichiarazione degli elementi della **top bar**;
+- Declaration of the program's **"global" variables**, including the window dimensions, flight-rule parameters, and sliders linked to those parameters;
+- Management of **random number generation**, used for the boids' initial positions and velocities;
+- Definition of all elements making up the **[initial screen](#simulation-dynamics)**;
+- Management of the boids' **[random colors](#stochastic-component)** and construction of the **predator**;
+- Management of the **window** and declaration of the *top bar* elements;
 - **Game loop**
-    - Gestione degli **```sf::Event```**;
+    - Handling **`sf::Event`** events;
     - **Game loop core**
-        - Costruzione dei boid (avviene solo una volta);
-        - Calcolo degli fps;
-        - Funzionamento degli slider;
-        - Gestione del movimento dei boid e del predatore;
+        - Construction of the boids (performed only once);
+        - Calculation of fps;
+        - Operation of the sliders;
+        - Management of boid and predator movement;
     - **Rendering**;
-    - Gestione dell'**[output delle statistiche](#output-delle-statistiche)**;
-    - Gestione della **schermata iniziale**;
+    - Management of the **[statistics output](#statistics-output)**;
+    - Management of the **initial screen**;
 
-### Altre implementazioni aggiuntive
+### Other additional features
 
-- **Angolo di vista:** con l'intento di rendere la simulazione più realistica, è stato definito un **angolo di vista** che impedisce ai boid di essere consapevoli di ciò che accade "alle loro spalle". L'implementazione si trova all'interno di [```bd::Boid::isCloseAndVisible()```](#boid). Il valore impostato di default è di 250°.  
+- **Field of view:** To make the simulation more realistic, a **viewing angle** was defined to prevent boids from being aware of what happens "behind their backs." This is implemented within [`bd::Boid::isCloseAndVisible()`](#bdboid). The default value is 250°.  
 
-- **Mouse left-click per generare un boid:** è possibile aggiungere dei nuovi boid a quelli generati all'inizio della simulazione **cliccando** in un qualsiasi punto della finestra, eccettuando la top bar. La posizione iniziale dei nuovi boid sarà quella del cursore del mouse, mentre la velocità iniziale ed il colore (compatibilmente al numero di stormi della simulazione) saranno casuali.  
-Tale funzionalità è stata implementata grazie a ```sf::Event::MouseButtonReleased``` e ```sf::Mouse::Left```. Per evitare di perturbare l'equilibrio della simulazione e per mantenere accettabili le prestazioni, si consiglia di utilizzarla *cum grano salis*.  
+<a id="left-click-to-generate-a-boid"></a>
+- **Left-click to generate a boid:** New boids can be added to those generated at the start of the simulation by **clicking** anywhere in the window, except on the top bar. The initial position of the new boids is that of the mouse cursor, while their initial velocity and color (subject to the number of flocks in the simulation) are random.  
+This feature was implemented using `sf::Event::MouseButtonReleased` and `sf::Mouse::Left`. To avoid disturbing the simulation's equilibrium and to maintain acceptable performance, it is advisable to use it *cum grano salis*.  
 
-- **Gestione del fuori focus:** quando la finestra *Boids Simulation* non è attiva la simulazione va **in pausa**. In particolare il moto dei boid si arresta e la finestra viene leggermente oscurata.  
-Per ottenere questo risultato è stato definito un ```bool window_in_focus{1}```, il cui valore dipende dalla coppia di eventi ```sf::Event::GainedFocus``` e ```sf::Event::LostFocus```. L'intero [game loop core](#rapida-overview-di-maincpp) viene eseguito solo se ```window_in_focus == 1```. Inoltre, se ```window_in_focus == 0```, viene disegnata al di sopra di tutti gli altri elementi della finestra una ```sf::RectangleShape darkness``` delle dimensioni della finestra, di colore nero e opacità ridotta.
+- **Handling loss of focus:** When the *Boids Simulation* window is not active, the simulation **pauses**. Specifically, the boids stop moving and the window becomes slightly darker.  
+To achieve this, a `bool window_in_focus{1}` was defined, whose value depends on the pair of events `sf::Event::GainedFocus` and `sf::Event::LostFocus`. The entire [game loop core](#quick-overview-of-maincpp) is executed only if `window_in_focus == 1`. Furthermore, if `window_in_focus == 0`, an `sf::RectangleShape darkness` the size of the window, colored black with reduced opacity, is drawn over all other window elements.
 
-## Strategie di testing
-In virtù dell'implementazione grafica, è stato possibile svolgere una parte considerevole del testing del programma tramite l'osservazione del comportamento dei vari elementi della finestra: boid, predatore, slider e pulsanti. 
-Si è comunque rivelato utile utilizzare la libreria di testing **doctest** per eseguire dei test più approfonditi su alcune delle funzioni più importanti del codice, in particolare:
+## Testing strategies
+Thanks to the graphical implementation, a considerable part of the program's testing could be carried out by observing the behavior of the various elements in the window: boids, predator, sliders, and buttons.
+Nevertheless, the **doctest** testing library proved useful for performing more thorough tests on some of the code's most important functions, particularly:
 
-- ```bd::Boid::isCloseAndVisible()```
-- ```bd::Boid::isFlockMate()```
-- ```sd::Slider::reset()```
-- ```st::printStatistics()```
+- `bd::Boid::isCloseAndVisible()`
+- `bd::Boid::isFlockMate()`
+- `sd::Slider::reset()`
+- `st::printStatistics()`
 
-Tali test si trovano all'interno di ```boids.test.cpp```. Comandi per eseguirli:
+These tests are contained in `boids.test.cpp`. Commands to run them:
 
 ```shell
 % pwd
@@ -256,11 +256,11 @@ Tali test si trovano all'interno di ```boids.test.cpp```. Comandi per eseguirli:
 % ./build/boids.t
 ```
 
-## Istruzioni per la compilazione
-Si consiglia di compilare ed eseguire il programma tramite **CMake**, utilizzando il file ```CMakeLists.txt```.  
-**Importante:** il programma è stato sviluppato su MacOS utilizzando la versione **2.6** di SFML, versione installata in automatico da Homebrew.
+## Compilation instructions
+It is recommended to compile and run the program using **CMake**, with the `CMakeLists.txt` file.  
+**Important:** The program was developed on macOS using **version 2.6** of SFML, which is automatically installed by Homebrew.
 
-Comandi per compilare ed eseguire:
+Commands to compile and run it:
 
 ```shell
 % pwd
@@ -272,11 +272,11 @@ Comandi per compilare ed eseguire:
 % ./build/boids
 ```
 
-## Interpretazione dei risultati
-Il programma funziona discretamente bene, il movimento dei boid è generalmente abbastanza simile a quello di uno **stormo reale**.
+## Interpretation of the results
+The program works reasonably well, and the movement of the boids is generally quite similar to that of a **real flock**.
 
-Gli slider assolvono correttamente alla loro funzione sebbene concedano, volutamente, poca libertà nel modificare i parametri a cui sono legati (questi ultimi possono subire un aumento/diminuzione del 50% al massimo). Questo perché dalla fase di [testing](#strategie-di-testing) del programma è emerso come una modifica eccessiva dei suddetti porti inevitabilmente a comportamenti errati da parte dei boid. Invero, quest'ultimo problema persiste anche nella versione finale del codice, sebbene in misura e frequenza molto ridotte. È infatti possibile che particolari combinazioni dei parametri delle regole di volo, unite ad un numero di boid molto elevato, generino comportamenti indesiderati, specialmente ai margini della finestra. Qualora questo accada, si consiglia di utilizzare l'apposito pulsante *reset*.
+The sliders perform their function correctly, although they deliberately allow only limited freedom to change their associated parameters (which can be increased or decreased by at most 50%). This is because the [testing](#testing-strategies) phase showed that excessive changes to these parameters inevitably lead to incorrect behavior by the boids. In fact, this issue persists even in the final version of the code, although to a much lesser extent and less frequently. Certain combinations of flight-rule parameters, together with a very large number of boids, may still produce undesirable behavior, especially near the edges of the window. If this happens, it is advisable to use the *reset* button.
 
-Rispettando la linea guida di non eccedere con il numero dei boid (specialmente tramite il [mouse left-click](#mouse-left-click-per-generare-un-boid)), le prestazioni del programma risultano sempre buone e stabili.
+As long as the guideline not to use an excessive number of boids is followed (especially when adding them via [left-click](#left-click-to-generate-a-boid)), the program's performance remains consistently good and stable.
 
-Per quanto concerne le statistiche stampate a schermo, esse sembrano essere coerenti con le aspettative, in particolare la **distanza media** sembra rispondere correttamente alle variazioni dei parametri delle regole di volo, mentre la **velocità media** è sempre inferiore alla velocità massima e ha una bassa **deviazione standard**.
+As for the statistics printed on screen, they seem consistent with expectations. In particular, the **mean distance** appears to respond appropriately to changes in the flight-rule parameters, while the **mean speed** is always lower than the maximum speed and has a low **standard deviation**.
